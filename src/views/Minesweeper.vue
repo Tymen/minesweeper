@@ -63,8 +63,13 @@ export default {
         },
         check(e) {
             let bombs = 0;
+            let tile = JSON.parse("[" + e.srcElement.id + "]");
+            let element = document.getElementById(e.srcElement.id);
+            if (this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
+                element.classList.add("bomb");
+                element.classList.remove("flag");
+            }
             for(let i = 0; i < 8; i++){
-                let tile = JSON.parse("[" + e.srcElement.id + "]");
                 switch(i){
                     case 0:
                         tile[0] = tile[0] - 1;
@@ -73,10 +78,10 @@ export default {
                         tile[1] = tile[1] + 1;
                         break;
                     case 2:
-                        tile[0] = tile[0] - 1;
+                        tile[0] = tile[0] + 1;
                         break;
                     case 3:
-                        tile[0] = tile[0] - 1;
+                        tile[0] = tile[0] + 1;
                         break;
                     case 4:
                         tile[1] = tile[1] - 1;
@@ -91,12 +96,14 @@ export default {
                         tile[0] = tile[0] - 1;
                         break;
                 }
+                console.log(`${tile[0]},${tile[1]}`);
                 if (this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
                     bombs = bombs + 1;
                     console.log(`Bomblocation: ${tile[0]},${tile[1]}`);
                 }
             }
             console.log("there are" + bombs + "around")
+            element.innerText = bombs;
             console.log("you clicked " + e.srcElement.id)
         },
         disableRClick(e) {
@@ -110,7 +117,7 @@ export default {
         }
     },
     created() {
-        this.bombCount = 10;
+        this.bombCount = 4;
         for(let i = 0; i < this.bombCount; i++){
             let cords = this.generateCords()
 
@@ -139,9 +146,15 @@ export default {
 }
 .hidden {
     background-color: gray;
-    width: 50px;
-    height: 50px;
+    color: white;
+    font-size: 20px;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
     margin: 5px;
+}
+.bomb {
+    background-color: red;
 }
 .flag {
     background-color: rgba(253, 0, 219, 0.596)!important;
