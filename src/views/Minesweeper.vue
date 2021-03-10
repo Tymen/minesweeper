@@ -50,11 +50,24 @@ export default {
         },
         checkForZero(cords) {
             let tile = JSON.parse("[" + cords + "]");
-            for(let i = 0; i < 8; i++){
-                console.log(`${tile[0]},${tile[1]}`);
-                tile = this.getCordsAroundTile(i, tile)
-                if(this.mapObject[`${tile[0]},${tile[1]}`] == 0 && !this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
-                    document.getElementById(`${tile[0]},${tile[1]}`).innerText = this.mapObject[`${tile[0]},${tile[1]}`];
+            let zero = true;
+            let zeroTiles = []
+            while(zero){
+                for(let i = 0; i < 8; i++){
+                    tile = this.defaultAlgorithm(i, tile)
+                    if(this.mapObject[`${tile[0]},${tile[1]}`] == 0 && !this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
+                        let getElInnerText = document.getElementById(`${tile[0]},${tile[1]}`).innerText
+                        if (getElInnerText == ""){
+                            zeroTiles.push(`${tile[0]},${tile[1]}`)
+                        }
+                        document.getElementById(`${tile[0]},${tile[1]}`).innerText = this.mapObject[`${tile[0]},${tile[1]}`];
+                    }
+                }
+                if (zeroTiles.length <= 0){
+                    zero = false
+                }else {
+                    zeroTiles.splice(0,1);
+                    tile = JSON.parse("[" + zeroTiles[0] + "]")
                 }
             }
         },
@@ -63,7 +76,7 @@ export default {
                 document.getElementById(this.bombLocations[i]).classList.add("bomb")
             }
         },
-        getCordsAroundTile(i, tile) {
+        defaultAlgorithm(i, tile) {
             switch(i){
                 case 0:
                     tile[0] = tile[0] - 1;
@@ -96,11 +109,9 @@ export default {
             let bombs = 0;
             let tile = JSON.parse("[" + cords + "]");
             for(let i = 0; i < 8; i++){
-                tile = this.getCordsAroundTile(i, tile)
-                console.log(`${tile[0]},${tile[1]}`);
+                tile = this.defaultAlgorithm(i, tile)
                 if (this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
                     bombs = bombs + 1;
-                    console.log(`Bomblocation: ${tile[0]},${tile[1]}`);
                 }
             }
             return bombs;
@@ -123,8 +134,12 @@ export default {
             for(let y = 0; y < this.rows; y++){
                 for(let x = 0; x < this.collumns; x++){
                     var el = document.getElementById(`${y},${x}`);
-                    el.classList.remove("bomb","flag")
-                    el.innerText = "";
+                    if (!el.innerText == ""){
+                        el.innerText = "";
+                    }
+                    if (el.classList.contains("bomb") || el.classList.contains("flag")){
+                        el.classList.remove("bomb","flag")
+                    }
                     this.mapObject[`${y},${x}`] = this.checkBombsAround(`${y},${x}`)
                 }
             }
@@ -172,7 +187,7 @@ export default {
     height: 40px;
     margin: 3px;
     cursor: pointer;
-    transition: .2s;
+    transition: .1s;
 }
 .hidden:hover {
     background-color: rgb(94, 94, 94);
