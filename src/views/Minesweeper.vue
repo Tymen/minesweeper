@@ -45,6 +45,7 @@ export default {
                 el.classList.remove("flag");
             }else {
                 el.innerText = this.mapObject[e.srcElement.id]
+                el.classList.add("revealed")
                 this.checkForZero(e.srcElement.id)
             }
         },
@@ -56,11 +57,12 @@ export default {
                 for(let i = 0; i < 8; i++){
                     tile = this.defaultAlgorithm(i, tile)
                     if(this.mapObject[`${tile[0]},${tile[1]}`] == 0 && !this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
-                        let getElInnerText = document.getElementById(`${tile[0]},${tile[1]}`).innerText
-                        if (getElInnerText == ""){
+                        let getEl = document.getElementById(`${tile[0]},${tile[1]}`)
+                        if (getEl.innerText == ""){
                             zeroTiles.push(`${tile[0]},${tile[1]}`)
                         }
-                        document.getElementById(`${tile[0]},${tile[1]}`).innerText = this.mapObject[`${tile[0]},${tile[1]}`];
+                        getEl.innerText = this.mapObject[`${tile[0]},${tile[1]}`];
+                        getEl.classList.add("revealed")
                     }
                 }
                 if (zeroTiles.length <= 0){
@@ -137,8 +139,8 @@ export default {
                     if (!el.innerText == ""){
                         el.innerText = "";
                     }
-                    if (el.classList.contains("bomb") || el.classList.contains("flag")){
-                        el.classList.remove("bomb","flag")
+                    if (el.classList.contains("bomb") || el.classList.contains("flag") || el.classList.contains("revealed")){
+                        el.classList.remove("bomb","flag","revealed")
                     }
                     this.mapObject[`${y},${x}`] = this.checkBombsAround(`${y},${x}`)
                 }
@@ -200,5 +202,8 @@ export default {
 }
 .flag {
     background-color: rgba(253, 0, 219, 0.596)!important;
+}
+.revealed {
+    background-color: rgb(100, 100, 100);
 }
 </style>
