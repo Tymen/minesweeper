@@ -51,13 +51,14 @@ export default {
         },
         checkForZero(cords) {
             let tile = JSON.parse("[" + cords + "]");
+            // let startCord = JSON.parse("[" + cords + "]");
             let zero = true;
             let zeroTiles = []
             while(zero){
                 for(let i = 0; i < 8; i++){
                     tile = this.defaultAlgorithm(i, tile)
+                    let getEl = document.getElementById(`${tile[0]},${tile[1]}`)
                     if(this.mapObject[`${tile[0]},${tile[1]}`] == 0 && !this.bombLocations.includes(`${tile[0]},${tile[1]}`)){
-                        let getEl = document.getElementById(`${tile[0]},${tile[1]}`)
                         if (getEl.innerText == ""){
                             zeroTiles.push(`${tile[0]},${tile[1]}`)
                         }
@@ -68,8 +69,9 @@ export default {
                 if (zeroTiles.length <= 0){
                     zero = false
                 }else {
-                    zeroTiles.splice(0,1);
+                    // startCord = JSON.parse("[" + zeroTiles[0] + "]");
                     tile = JSON.parse("[" + zeroTiles[0] + "]")
+                    zeroTiles.splice(0,1);
                 }
             }
         },
